@@ -1,0 +1,4 @@
+node_modules/      # Prevents hundreds/thousands of dependency files
+dist/              # Common output folder (e.g. build artifacts)
+build/             # Same here, used by many frontend tools
+.env               # Hides environment variables like API keys

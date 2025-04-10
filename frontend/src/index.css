@@ -1,0 +1,451 @@
+/* Hier können die Spaltenbreiten jeder einzelnen Spalte geändert werden */
+:root {
+  --table-title-width: 200px;
+  --table-doi-width: 180px;
+  --table-year-width: 80px;
+
+  --table-modeling-width: 100px;
+  --table-extraction-width: 100px;
+  --table-verification-width: 100px;
+  --table-monitoring-width: 100px;
+  --table-audit-width: 100px;
+  --table-reporting-width: 100px;
+  --table-explanation-width: 100px;
+  --table-recovery-width: 100px;
+  --table-resolution-width: 100px;
+
+  --table-regdocuments-width: 100px;
+  --table-puretextreq-width: 100px;
+  --table-internalpolicies-width: 100px;
+  --table-bpmodels-width: 100px;
+  --table-bpdescription-width: 100px;
+  --table-eventlogs-width: 100px;
+  --table-formalizedconstraints-width: 100px;
+  --table-semiformalizedconstraints-width: 100px;
+  --table-others-width: 100px;
+
+  --table-natureofdata-width: 100px;
+  --table-timestamp-width: 200px;
+
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+
+}
+
+body {
+  background-color: #6bfac8;
+  margin: 0% 20% 0% 20%;
+}
+
+.navbar_container {
+  background-color: gray;
+  text-align: center;
+}
+
+.paper-entry {
+  background-color: rgb(208, 223, 248);
+  display: flex;
+}
+
+/* Die Papers Tabelle */
+.papers {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background-color: blue;
+  display: flex;
+}
+
+.header_1 {
+  background-color: rgb(160, 245, 111);
+  display: flex;
+
+  .header_title {
+    width: var(--table-title-width);
+  }
+  .header_doi {
+    width: var(--table-doi-width);
+  }
+  .header_year {
+    width: var(--table-year-width);
+  }
+}
+
+.header_2 {
+  background-color: rgb(0, 245, 111);
+  display: flex;
+  flex-direction: column;
+
+  .header_2_category {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.header_2_category_bottom {
+  display: flex;
+  flex-direction: row;
+
+  .header_modeling {
+    width: var(--table-modeling-width);
+  }
+  .header_extraction {
+    width: var(--table-extraction-width);
+  }
+  .header_verification {
+    width: var(--table-verification-width);
+  }
+  .header_monitoring {
+    width: var(--table-monitoring-width);
+  }
+  .header_audit {
+    width: var(--table-audit-width);
+  }
+  .header_reporting {
+    width: var(--table-reporting-width);
+  }
+  .header_explanation {
+    width: var(--table-explanation-width);
+  }
+  .header_recovery {
+    width: var(--table-recovery-width);
+  }
+  .header_resolution {
+    width: var(--table-resolution-width);
+  }
+}
+
+.header_3 {
+  background-color: rgb(160, 245, 111);
+  display: flex;
+  flex-direction: column;
+
+  .header_3_category {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.header_3_category {
+  
+  .header_regdocuments {
+    width: var(--table-regdocuments-width);
+  }
+
+  .header_puretextreq {
+    width: var(--table-puretextreq-width);
+  }
+
+  .header_internalpolicies {
+    width: var(--table-internalpolicies-width);
+  }
+
+  .header_bpmodels {
+    width: var(--table-bpmodels-width);
+  }
+
+  .header_bpdescription {
+    width: var(--table-bpdescription-width);
+  }
+
+  .header_eventlogs {
+    width: var(--table-eventlogs-width);
+  }
+
+  .header_formalizedconstraints {
+    width: var(--table-formalizedconstraints-width);
+  }
+
+  .header_semiformalizedconstraints {
+    width: var(--table-semiformalizedconstraints-width);
+  }
+
+  .header_others {
+    width: var(--table-others-width);
+  }
+}
+
+.header_4 {
+  background-color: rgb(0, 245, 111);
+  display: flex;
+
+  .header_4_natureofdata {
+    width: var(--table-natureofdata-width);
+  }
+}
+
+.header_timestamp {
+  background-color: rgb(160, 245, 111);
+  width: var(--table-timestamp-width);
+}
+
+.paper_entry {
+  display: flex;
+  flex-direction: row;
+
+  .entry_title {
+    width: var(--table-title-width);
+    flex-shrink: 0;
+    transition: background-color 0.3s ease;
+  }
+
+  .entry_doi {
+    width: var(--table-doi-width);
+    flex-shrink: 0;
+  }
+
+  .entry_year {
+    width: var(--table-year-width);
+    flex-shrink: 0;
+  }
+
+  .entry_elicitation_modeling {
+    width: var(--table-modeling-width);
+    flex-shrink: 0;
+  }
+
+  .entry_elicitation_extraction {
+    width: var(--table-extraction-width);
+    flex-shrink: 0;
+  }
+
+  .entry_checking_verification {
+    width: var(--table-verification-width);
+    flex-shrink: 0;
+  }
+
+  .entry_checking_enforcementmonitoring {
+    width: var(--table-monitoring-width);
+    flex-shrink: 0;
+  }
+
+  .entry_checking_audit {
+    width: var(--table-audit-width);
+    flex-shrink: 0;
+  }
+
+  .entry_analysis_reporting {
+    width: var(--table-reporting-width);
+    flex-shrink: 0;
+  }
+
+  .entry_analysis_explanation {
+    width: var(--table-explanation-width);
+    flex-shrink: 0;
+  }
+
+  .entry_enhancement_recovery {
+    width: var(--table-recovery-width);
+    flex-shrink: 0;
+  }
+
+  .entry_enhancement_resolution {
+    width: var(--table-resolution-width);
+    flex-shrink: 0;
+  }
+
+  .entry_other_tasks {
+    width: var(--table-others-width);
+    flex-shrink: 0;
+  }
+
+  .entry_data_regdocuments {
+    width: var(--table-regdocuments-width);
+    flex-shrink: 0;
+  }
+
+  .entry_data_puretextreq {
+    width: var(--table-puretextreq-width);
+    flex-shrink: 0;
+  }
+
+  .entry_data_internalpolicies {
+    width: var(--table-internalpolicies-width);
+    flex-shrink: 0;
+  }
+
+  .entry_data_bpmodels {
+    width: var(--table-bpmodels-width);
+    flex-shrink: 0;
+  }
+
+  .entry_data_bpdescription {
+    width: var(--table-bpdescription-width);
+    flex-shrink: 0;
+  }
+
+  .entry_data_eventlogs {
+    width: var(--table-eventlogs-width);
+    flex-shrink: 0;
+  }
+
+  .entry_data_formalizedconstraints {
+    width: var(--table-formalizedconstraints-width);
+    flex-shrink: 0;
+  }
+
+  .entry_data_semiformalizedconstraints {
+    width: var(--table-semiformalizedconstraints-width);
+    flex-shrink: 0;
+  }
+
+  .entry_data_others {
+    width: var(--table-others-width);
+    flex-shrink: 0;
+  }
+
+  .entry_faq_natureofdata {
+    width: var(--table-natureofdata-width);
+    flex-shrink: 0;
+  }
+
+  .entry_createdat {
+    width: var(--table-timestamp-width);
+    flex-shrink: 0;
+  }
+}
+
+.paper_entry:hover {
+  background-color: lightblue;
+  cursor: pointer;
+}
+
+.details_header {
+  background-color: rgb(210, 170, 120);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.details_title {
+  color: blue;
+  width: 60%;
+  text-align: center;
+}
+.year_and_cits {
+  display: flex;
+  flex-direction: row;
+  width: 40%;
+  color: black;
+  justify-content: space-around;
+}
+.details_blue{
+  color: blue;
+}
+
+.details_1 {
+  background-color: coral;
+  display: flex;
+  flex-direction: row;
+}
+.details_1_abstract {
+  display: flex;
+  width: 80%;
+  margin: 20px;
+}
+
+.details_1_right {
+  background-color: crimson;
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+}
+
+.details_2 {
+  background-color: darkmagenta;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.details_2_content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20px;
+}
+
+.details_2_1 {
+  background-color: rgb(178, 45, 149);
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  justify-content: center;
+}
+
+.details_2_2 {
+  background-color: rgb(197, 114, 197);
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  justify-content: center;
+}
+
+.details_2_3 {
+  background-color: rgb(214, 143, 214);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.details_3 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.details_3_headline {
+  display: flex;
+  justify-content: center;
+}
+
+.freies_posing {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+}
+
+.latissimus_von_vorn,
+.latissimus_von_hintn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.details_4 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.details_4_headline {
+  display: flex;
+  justify-content: center;
+}
+
+.details_4_qa_container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.details_4_qa {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.details_4_question {
+  background-color: blue;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  width: 300px;
+  padding: 10px;
+}
+.details_4_answer {
+  background-color: lightblue;
+  display: flex;
+  flex-direction: row;
+  width: 700px;
+  padding: 10px;
+}
