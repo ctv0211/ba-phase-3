@@ -134,6 +134,7 @@ Das eingesetzte csv file muss folgende Bedingungen erfüllen:
                 }
 
                 alert('All data inserted!');
+                window.location.reload();
               },
             error: function (error) {
                 console.error('Error parsing CSV:', error);
