@@ -1,9 +1,15 @@
+import { useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import acceptImg from '../images/accept.png';
 import removeImg from '../images/remove.png';
 
 const PaperDetails = ({ paper }) => {
     const navigate = useNavigate()
+
+    // Wenn diese Component gerendert wird, nach oben scrollen
+    useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
 
     return (
         <div className="paper-details">
@@ -16,15 +22,19 @@ const PaperDetails = ({ paper }) => {
                 </div>
             </div>
 
+            <hr />
+
             <div className="details_1">
                 <div className="details_1_abstract"><p><strong>Abstract: </strong> {paper.abstract}</p></div>
                 <div className="details_1_right">
                     <p><strong>Type of Paper:</strong> {paper.typeOfPaper}</p>
-                    <p><strong>DOI:</strong> {paper.doi}</p>
+                    <a href={`https://doi.org/${paper.doi}`} target="_blank" rel="noopener noreferrer">Access Paper DOI</a>
                     <p><strong>Data Accessible:</strong> {paper.dataAccessible ? 'Yes' : 'No'}</p>
                     <p><strong>Nature of Data:</strong> {paper.FAQ_NatureOfData}</p>
                 </div>
             </div>
+
+            <hr />
 
             <div className="details_2">
                 <div className="details_2_headline">
@@ -64,6 +74,8 @@ const PaperDetails = ({ paper }) => {
                     <p><strong>Others: </strong>{paper.BPC_Task_Others}</p>
                 </div>
             </div>
+
+            <hr />
 
             <div className="details_3">
                 <div className="details_3_headline">
@@ -134,6 +146,8 @@ const PaperDetails = ({ paper }) => {
                     </div>
                 </div>
             </div>
+
+            <hr />
             
             <div className="details_4">
                 <div className="details_4_headline">

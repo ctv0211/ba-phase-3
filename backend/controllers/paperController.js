@@ -73,7 +73,11 @@ const createPaper = async (req, res) => {
         FAQ_Stakeholders
     } = req.body;
 
-    console.log(req.body)
+    // omit "https://doi.org/" from doi
+    let cleanedDOI = doi
+    if (doi?.trim().toLowerCase().startsWith("https://doi.org/")) {
+        cleanedDOI = doi.replace(/^https:\/\/doi\.org\//i, "");
+    }
 
     try {
         const paper = await Paper.create({
@@ -81,7 +85,7 @@ const createPaper = async (req, res) => {
             title,
             numberOfCitations,
             abstract,
-            doi,
+            doi: cleanedDOI,
             typeOfPaper,
             dataAccessible,
             BPC_Task_ComplianceElicitation_Modeling,
@@ -118,9 +122,6 @@ const createPaper = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-
-module.exports = { createPaper };
-
 
 // DELETE paper by id
 const deletePaperById = async (req, res) => {

@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
+import Papa from 'papaparse';
 
 // components
 import PaperEntry from '../components/PaperEntry'
@@ -38,6 +39,10 @@ const Home = ({setChosenPaper }) => {
     const [semiformalizedConstraints, setSemiformalizedConstraints] = useState(false)
 
     const [natureOfData, setNatureOfData] = useState("")
+
+    const [searchTerm, setSearchTerm] = useState("")
+
+    console.log("searchTerm", searchTerm)
 
     // useEffect hook: rufe diesen Code nur einmalig auf (wenn Home Component erstmalig gerendert wird)
     useEffect(() => {
@@ -88,54 +93,53 @@ const Home = ({setChosenPaper }) => {
         fileInputRef.current.click();
     };
     
-    // Paper in Database speichern
-    // WICHTIG: Das .csv muss die Folgenden Felder in der 1. Zeile stehen haben (Reihenfolge egal)
-    // title,abstract,numberOfCitations,doi,year,typeOfPaper,dataAccessible,BPC_Task_ComplianceElicitation_Modeling,BPC_Task_ComplianceElicitation_Extraction,BPC_Task_ComplianceChecking_Verification,BPC_Task_ComplianceChecking_EnforcementMonitoring,BPC_Task_ComplianceChecking_Audit,BPC_Task_ComplianceAnalysis_Reporting,BPC_Task_ComplianceAnalysis_Explanation,BPC_Task_ComplianceEnhancement_Recovery,BPC_Task_ComplianceEnhancement_Resolution,BPC_Task_Others,TypeOfData_RegulatoryDocuments,TypeOfData_PureTextRequirements,TypeOfData_InternalPolicies,TypeOfData_BPModels,TypeOfData_BPDescription,TypeOfData_EventLogs,TypeOfData_FormalizedConstraints,TypeOfData_SemiformalizedConstraints,TypeOfData_Others,FAQ_OtherDataInFuture,FAQ_DataProcessed,FAQ_DataConverter,FAQ_LimitationsOfDataset,FAQ_NatureOfData,FAQ_MoreThanOneVersion,FAQ_ComplianceLevelOrDegree,FAQ_Stakeholders
+    /* Paper in Database speichern
+Das eingesetzte csv file muss folgende Bedingungen erfüllen:
+1) Semikolon als Trennzeichen
+2) 1. Zeile ist der Header, der die Spaltennamen enthält:
+    2.1) Mögliche Spaltennamen sind:  title,abstract,numberOfCitations,doi,year,typeOfPaper,dataAccessible,BPC_Task_ComplianceElicitation_Modeling,BPC_Task_ComplianceElicitation_Extraction,BPC_Task_ComplianceChecking_Verification,BPC_Task_ComplianceChecking_EnforcementMonitoring,BPC_Task_ComplianceChecking_Audit,BPC_Task_ComplianceAnalysis_Reporting,BPC_Task_ComplianceAnalysis_Explanation,BPC_Task_ComplianceEnhancement_Recovery,BPC_Task_ComplianceEnhancement_Resolution,BPC_Task_Others,TypeOfData_RegulatoryDocuments,TypeOfData_PureTextRequirements,TypeOfData_InternalPolicies,TypeOfData_BPModels,TypeOfData_BPDescription,TypeOfData_EventLogs,TypeOfData_FormalizedConstraints,TypeOfData_SemiformalizedConstraints,TypeOfData_Others,FAQ_OtherDataInFuture,FAQ_DataProcessed,FAQ_DataConverter,FAQ_LimitationsOfDataset,FAQ_NatureOfData,FAQ_MoreThanOneVersion,FAQ_ComplianceLevelOrDegree,FAQ_Stakeholders
+    2.2) Groß-/Kleinschreibung ist egal
+    2.3) Reihenfolge der Spalten ist egal
+3) Ab der 2. Zeile folgen die Einträge
+    3.1) Einträge dürfen kein Semikolon enthalten
+    3.2) Leeres Feld im Eintrag ist ""
+4) Die Einträge (und der Header) sind durch Newlines (\n) voneineander getrennt
+    */
     const handleFileUpload = async (e) => {
         const file = e.target.files[0];
         // Mal kucken ob das file überhaupt existiert
         if (!file) return;
-    
-        try {
-            // Header (1. Zeile im csv) und Rows extrahieren
-            const text = await file.text();
-            const rows = text.split('\n').map(row => row.trim()).filter(Boolean);
-            const headers = rows[0].split(',').map(h => h.trim());
-        
-            // JSON bauen mit den Header Feldern und den dazugehörigen Values
-            const entries = rows.slice(1).map(row => {
-                const values = row.split(',').map(v => v.trim());
-                const obj = {};
-                headers.forEach((header, i) => {
-                obj[header] = values[i];
-                });
-                return obj;
-            });
 
-            console.log("Entries to add: ", entries)
-        
-            // POST jeder Eintrag in die Datenbank
-            for (const entry of entries) {
-                const res = await fetch('/api/papers', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(entry),
-                });
-        
-                if (!res.ok) {
-                console.error('Failed to insert paper:', entry, await res.text());
+        Papa.parse(file, {
+            header: true,
+            delimiter: ';',
+            skipEmptyLines: true,
+            complete: async function (results) {
+                console.log('Parsed data:', results.data);
+
+                for (const entry of results.data) {
+                  try {
+                    const res = await fetch('/api/papers', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(entry),
+                    });
+
+                    if (!res.ok) {
+                      console.error('Failed to insert paper:', entry, await res.text());
+                    }
+                  } catch (err) {
+                    console.error('Fetch error:', err);
+                  }
                 }
-            }
-        
-            alert('All data inserted!');
-            window.location.reload();
-        } catch (err) {
-            console.error('Error uploading file:', err);
-            alert('Upload failed.');
-        }
-    };
 
-    console.log('State:', {natureOfData });
+                alert('All data inserted!');
+              },
+            error: function (error) {
+                console.error('Error parsing CSV:', error);
+            }
+            });
+          }
 
     return (
         <>
@@ -163,8 +167,13 @@ const Home = ({setChosenPaper }) => {
 
                 natureOfData={natureOfData}
                 setNatureOfData={setNatureOfData}
+
+                setSearchTerm={setSearchTerm}
             />
-            <button onClick={handleInsertClick}>Insert Data</button>
+            <div className='button_container'>
+              <button className="insert_data" onClick={handleInsertClick}>Insert Data</button>
+              <button className="delete_data" onClick={handleDeleteAll}>Delete All Papers</button>
+            </div>
             <input
                 ref={fileInputRef}
                 type="file"
@@ -172,126 +181,133 @@ const Home = ({setChosenPaper }) => {
                 onChange={handleFileUpload}
                 style={{ display: 'none' }}
             />
-            <div className="home">
-            <Header />
-                <div className='papers'>
-                    {papers && papers.map((paper) => {
-                        const inYearRange = startYear === null && endYear === null || paper.year >= startYear && paper.year <= endYear;
 
-                        const modelingMatch = modeling
-                          ? paper.BPC_Task_ComplianceElicitation_Modeling === "Main Focus"
+            <div className='table-scroll-container'>
+              <div className="home">
+              <Header />
+                  <div className='papers'>
+                      {papers && papers.map((paper) => {
+                          const inYearRange = startYear === null && endYear === null || paper.year >= startYear && paper.year <= endYear;
+
+                          const acceptedFocusValues = [
+                            "Main Focus",
+                            "Secondary Focus",
+                            "Mentioned in Future Work"
+                          ];
+
+                          const modelingMatch = modeling
+                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceElicitation_Modeling)
                           : true;
-                      
+
                         const extractionMatch = extraction
-                          ? paper.BPC_Task_ComplianceElicitation_Extraction === "Main Focus"
+                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceElicitation_Extraction)
                           : true;
-                      
+
                         const verificationMatch = verification
-                          ? paper.BPC_Task_ComplianceChecking_Verification === "Main Focus"
+                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceChecking_Verification)
                           : true;
-                      
+
                         const monitoringMatch = monitoring
-                          ? paper.BPC_Task_ComplianceChecking_EnforcementMonitoring === "Main Focus"
+                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceChecking_EnforcementMonitoring)
                           : true;
-                      
+
                         const auditMatch = audit
-                          ? paper.BPC_Task_ComplianceChecking_Audit === "Main Focus"
+                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceChecking_Audit)
                           : true;
-                      
+
                         const reportingMatch = reporting
-                          ? paper.BPC_Task_ComplianceAnalysis_Reporting === "Main Focus"
+                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceAnalysis_Reporting)
                           : true;
-                      
+
                         const explanationMatch = explanation
-                          ? paper.BPC_Task_ComplianceAnalysis_Explanation === "Main Focus"
+                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceAnalysis_Explanation)
                           : true;
-                      
+
                         const recoveryMatch = recovery
-                          ? paper.BPC_Task_ComplianceEnhancement_Recovery === "Main Focus"
+                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceEnhancement_Recovery)
                           : true;
-                      
+
                         const resolutionMatch = resolution
-                          ? paper.BPC_Task_ComplianceEnhancement_Resolution === "Main Focus"
+                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceEnhancement_Resolution)
                           : true;
+                          const regulatoryDocumentsMatch = regulatoryDocuments
+                              ? paper.TypeOfData_RegulatoryDocuments.toLowerCase().startsWith("yes")
+                              : true
 
-                        const regulatoryDocumentsMatch = regulatoryDocuments
-                            ? paper.TypeOfData_RegulatoryDocuments.toLowerCase().startsWith("yes")
-                            : true
+                          const pureTextRequirementsMatch = pureTextRequirements
+                              ? paper.TypeOfData_PureTextRequirements.toLowerCase().startsWith("yes")
+                              : true
+                          
+                          const internalPoliciesMatch = internalPolicies
+                              ? paper.TypeOfData_InternalPolicies.toLowerCase().startsWith("yes")
+                              : true
+                          
+                          const bpModelsMatch = bpModels
+                              ? paper.TypeOfData_BPModels.toLowerCase().startsWith("yes")
+                              : true
+                          
+                          const bpDescripionMatch = bpDescripion
+                              ? paper.TypeOfData_BPDescription.toLowerCase().startsWith("yes")
+                              : true
 
-                        const pureTextRequirementsMatch = pureTextRequirements
-                            ? paper.TypeOfData_PureTextRequirements.toLowerCase().startsWith("yes")
-                            : true
+                          const eventLogsMatch = eventLogs
+                              ? paper.TypeOfData_EventLogs.toLowerCase().startsWith("yes")
+                              : true
+
+                          const formalizedConstraintsMatch = formalizedConstraints
+                              ? paper.TypeOfData_FormalizedConstraints.toLowerCase().startsWith("yes")
+                              : true
+
+                          const semiformalizedConstraintsMatch = semiformalizedConstraints
+                              ? paper.TypeOfData_SemiformalizedConstraints.toLowerCase().startsWith("yes")
+                              : true
+
+                          const natureOfDataSyntheticMatch = natureOfData.toLowerCase() === "synthetic"
+                              ? paper.FAQ_NatureOfData.toLowerCase() === "synthetic"
+                              : true
+
+                          const natureOfDataRealworldMatch = natureOfData.toLowerCase() === "real-world"
+                              ? paper.FAQ_NatureOfData.toLowerCase() === "real-world"
+                              : true
                         
-                        const internalPoliciesMatch = internalPolicies
-                            ? paper.TypeOfData_InternalPolicies.toLowerCase().startsWith("yes")
-                            : true
-                        
-                        const bpModelsMatch = bpModels
-                            ? paper.TypeOfData_BPModels.toLowerCase().startsWith("yes")
-                            : true
-                        
-                        const bpDescripionMatch = bpDescripion
-                            ? paper.TypeOfData_BPDescription.toLowerCase().startsWith("yes")
-                            : true
+                          const matchesAll =
+                            inYearRange &&
+                            modelingMatch &&
+                            extractionMatch &&
+                            verificationMatch &&
+                            monitoringMatch &&
+                            auditMatch &&
+                            reportingMatch &&
+                            explanationMatch &&
+                            recoveryMatch &&
+                            resolutionMatch &&
+                            regulatoryDocumentsMatch &&
+                            pureTextRequirementsMatch &&
+                            internalPoliciesMatch &&
+                            bpModelsMatch &&
+                            bpDescripionMatch &&
+                            eventLogsMatch &&
+                            formalizedConstraintsMatch &&
+                            semiformalizedConstraintsMatch &&
+                            natureOfDataSyntheticMatch &&
+                            natureOfDataRealworldMatch &&
 
-                        const eventLogsMatch = eventLogs
-                            ? paper.TypeOfData_EventLogs.toLowerCase().startsWith("yes")
-                            : true
-
-                        const formalizedConstraintsMatch = formalizedConstraints
-                            ? paper.TypeOfData_FormalizedConstraints.toLowerCase().startsWith("yes")
-                            : true
-
-                        const semiformalizedConstraintsMatch = semiformalizedConstraints
-                            ? paper.TypeOfData_SemiformalizedConstraints.toLowerCase().startsWith("yes")
-                            : true
-
-                        const natureOfDataSyntheticMatch = natureOfData !== ""
-                            && paper.FAQ_NatureOfData.toLowerCase()
-
-                        const natureOfDataRealworldMatch = natureOfData !== ""
-                            ? paper.FAQ_NatureOfData.toLowerCase() === "real-world"
-                            : true
+                            paper.doi.includes(searchTerm)
                       
-                        const matchesAll =
-                          inYearRange &&
-                          modelingMatch &&
-                          extractionMatch &&
-                          verificationMatch &&
-                          monitoringMatch &&
-                          auditMatch &&
-                          reportingMatch &&
-                          explanationMatch &&
-                          recoveryMatch &&
-                          resolutionMatch &&
-                          regulatoryDocumentsMatch &&
-                          pureTextRequirementsMatch &&
-                          internalPoliciesMatch &&
-                          bpModelsMatch &&
-                          bpDescripionMatch &&
-                          eventLogsMatch &&
-                          formalizedConstraintsMatch &&
-                          semiformalizedConstraintsMatch &&
-                          natureOfDataSyntheticMatch &&
-                          natureOfDataRealworldMatch
-                    
-                        return (
-                            matchesAll && (
-                                <PaperEntry
-                                    key={paper._id}
-                                    paper={paper}
-                                    setChosenPaper={setChosenPaper}
-                                />
-                            )
-                        );
-                    })}
-                </div>
+                          return (
+                              matchesAll && (
+                                  <PaperEntry
+                                      key={paper._id}
+                                      paper={paper}
+                                      setChosenPaper={setChosenPaper}
+                                  />
+                              )
+                          );
+                      })}
+                  </div>
+              </div>
             </div>
-            <button onClick={handleDeleteAll} style={{ backgroundColor: 'crimson', color: 'white', marginLeft: '10px' }}>
-                Delete All Papers
-            </button>
         </>
     )
 }
-
 export default Home

@@ -32,9 +32,10 @@ const PaperEntry = ({ paper, setChosenPaper }) => {
     };
 
     return (
+        <div className="paper_entry_container">
         <div className="paper_entry" onClick={handleClick}>
             <div className="entry_title"><p>{paper.title}</p></div>
-            <div className="entry_doi"><p>{paper.doi}</p></div>
+            <div className="entry_doi"><a href={`https://doi.org/${paper.doi}`} target="_blank" rel="noopener noreferrer">{paper.doi}</a></div>
             <div className="entry_year"><p>{paper.year}</p></div>
 
             <div className="entry_elicitation_modeling"><p>{paper.BPC_Task_ComplianceElicitation_Modeling}</p></div>
@@ -60,13 +61,13 @@ const PaperEntry = ({ paper, setChosenPaper }) => {
 
             <div className="entry_faq_natureofdata"><p>{paper.FAQ_NatureOfData}</p></div>
             <div className="entry_createdat"><p>{paper.createdAt}</p></div>
-
-            <div className="entry_delete">
-                <button onClick={handleDelete} style={{ backgroundColor: 'crimson', color: 'white', padding: '0.3rem 0.6rem', cursor: 'pointer', border: 'none', borderRadius: '4px' }}>
-                    Delete
-                </button>
-            </div>
         </div>
+        <div className="entry_delete">
+        <button onClick={handleDelete} style={{ backgroundColor: 'crimson', color: 'white', padding: '0.3rem 0.6rem', cursor: 'pointer', border: 'none', borderRadius: '4px' }}>
+            Delete
+        </button>
+        </div>
+    </div>
     )
 }
 

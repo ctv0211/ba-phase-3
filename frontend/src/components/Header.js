@@ -73,9 +73,9 @@ const Header = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="header_Other">
+                    <div className="header_other">
                         <div className="header_2_category_bottom">
-                            <div className="header_recovery">
+                            <div className="header_other">
                                 <p>Other</p>
                             </div>
                         </div>
@@ -111,7 +111,7 @@ const Header = () => {
                     <div className="header_semiformalizedconstraints">
                         <p>Semi-Formalized Constraints</p>
                     </div>
-                    <div className="header_others">
+                    <div className="header_other">
                         <p>Others</p>
                     </div>
                 </div>
