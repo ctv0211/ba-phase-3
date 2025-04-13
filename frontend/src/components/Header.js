@@ -3,14 +3,17 @@ const Header = () => {
     return (
         <div className="header">
             <div className="header_1">
-                <div className="header_title">
-                    <p>Title</p>
-                </div>
-                <div className="header_doi">
-                    <p>DOI</p>
-                </div>
-                <div className="header_year">
-                    <p>Year</p>
+                <div className="header_fill_space"></div>
+                <div className="header_1_content">
+                    <div className="header_title">
+                        <p>Title</p>
+                    </div>
+                    <div className="header_doi">
+                        <p>DOI</p>
+                    </div>
+                    <div className="header_year">
+                        <p>Year</p>
+                    </div>
                 </div>
             </div>
             <div className="header_2">
@@ -73,7 +76,10 @@ const Header = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="header_other">
+                    <div className="header_others">
+                        <div className="header_category_top">
+                            <p>Others</p>
+                        </div>
                         <div className="header_2_category_bottom">
                             <div className="header_other">
                                 <p>Other</p>
@@ -83,6 +89,7 @@ const Header = () => {
                 </div>
             </div>
             <div className="header_3">
+                <div className="header_fill_space"></div>
                 <div className="header_typeofdata">
                     <p>Type of Data</p>
                 </div>
@@ -117,12 +124,16 @@ const Header = () => {
                 </div>
             </div>
             <div className="header_4">
+                <div className="header_fill_space"></div>
                 <div className="header_4_natureofdata">
                     <p>Nature of Data</p>
                 </div>
             </div>
-            <div className="header_timestamp">
-                <p>Added on</p>
+            <div className="header_5">
+            <div className="header_fill_space"></div>
+                <div className="header_addedon">
+                    <p>Added on</p>
+                </div>
             </div>
         </div>
     )

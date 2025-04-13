@@ -1,31 +1,31 @@
 /* Hier können die Spaltenbreiten jeder einzelnen Spalte geändert werden */
 :root {
   --table-title-width: 200px;
-  --table-doi-width: 180px;
-  --table-year-width: 80px;
+  --table-doi-width: 160px;
+  --table-year-width: 40px;
 
-  --table-modeling-width: 100px;
-  --table-extraction-width: 100px;
-  --table-verification-width: 100px;
-  --table-monitoring-width: 100px;
-  --table-audit-width: 100px;
-  --table-reporting-width: 100px;
-  --table-explanation-width: 100px;
-  --table-recovery-width: 100px;
-  --table-resolution-width: 100px;
+  --table-modeling-width: 80px;
+  --table-extraction-width: 80px;
+  --table-verification-width: 80px;
+  --table-monitoring-width: 80px;
+  --table-audit-width: 80px;
+  --table-reporting-width: 80px;
+  --table-explanation-width: 80px;
+  --table-recovery-width: 80px;
+  --table-resolution-width: 80px;
 
-  --table-regdocuments-width: 100px;
-  --table-puretextreq-width: 100px;
-  --table-internalpolicies-width: 100px;
-  --table-bpmodels-width: 100px;
-  --table-bpdescription-width: 100px;
-  --table-eventlogs-width: 100px;
-  --table-formalizedconstraints-width: 100px;
-  --table-semiformalizedconstraints-width: 100px;
-  --table-others-width: 100px;
+  --table-regdocuments-width: 200px;
+  --table-puretextreq-width: 200px;
+  --table-internalpolicies-width: 200px;
+  --table-bpmodels-width: 200px;
+  --table-bpdescription-width: 200px;
+  --table-eventlogs-width: 200px;
+  --table-formalizedconstraints-width: 200px;
+  --table-semiformalizedconstraints-width: 200px;
+  --table-others-width: 200px;
 
-  --table-natureofdata-width: 100px;
-  --table-timestamp-width: 200px;
+  --table-natureofdata-width: 60px;
+  --table-timestamp-width: 100px;
 
   font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 
@@ -35,12 +35,24 @@
 }
 
 body {
-  margin: 0% 20% 0% 20%;
+  margin: 0;
 }
 
 .navbar_container {
   background-color: cyan;
   text-align: center;
+  padding: 20px;
+   h1 {
+    margin: 0;
+   }
+}
+
+.home_content_container {
+  margin: 0 20% 0 20%;
+}
+
+.paper_details {
+  margin: 0 20% 0 20%;
 }
 
 .button_container {
@@ -61,6 +73,8 @@ body {
   transition: 0.2s ease all;
   width: 150px;
   height: 60px;
+  display: flex;
+  align-items: center;
 }
 .insert_data:hover {
   background-color: cyan;
@@ -69,7 +83,8 @@ body {
 
 .delete_data {
   padding: 1rem 2rem;
-  font-size: 0.6rem;
+  font-size: 1rem;
+  align-items: center;
   border: 3px solid red;
   background-color: white;
   color: black;
@@ -88,6 +103,11 @@ body {
   overflow-x: auto;
   max-width: 100%;
   border: 1px solid #ccc;
+  margin: 0 10px 0 10px;
+
+  p, a {
+    font-size: 12px;
+  }
 }
 
 .paper-entry {
@@ -103,37 +123,58 @@ body {
 
 .header {
   display: flex;
+  justify-content: flex-start;
   margin-bottom: 5px;
 }
 
 .header_1 {
   display: flex;
-  background-color: cyan;
+  flex-direction: column;
+
+  .header_fill_space {
+    flex: 0 0 68.5%;
+  }
+
+  .header_1_content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
 
   .header_title {
+    margin-right: 6px;
     width: var(--table-title-width);
+    background-color:aquamarine;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
+    text-align: center;
   }
   .header_doi {
+    margin-right: 6px;
     width: var(--table-doi-width);
+    background-color:aquamarine;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
+    height: 100%;
+    text-align: center;
   }
   .header_year {
+    margin-right: 6px;
     width: var(--table-year-width);
+    background-color:aquamarine;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
+    height: 100%;
+    text-align: center;
   }
 }
 
 .header_2 {
   display: flex;
   flex-direction: column;
-  background-color: cornflowerblue;
 
   .header_2_category {
     display: flex;
@@ -145,17 +186,27 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: 6px;
+  margin-bottom: 3px;
+  background-color: cornflowerblue;
 }
 
 .header_category_top {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: 6px;
+  margin-bottom: 3px;
+  background-color: cornflowerblue;
 }
 
 .header_2_category_bottom {
   display: flex;
   flex-direction: row;
+  div {
+    background-color: gainsboro;
+    margin-right: 6px;
+  }
 
   .header_modeling {
     width: var(--table-modeling-width);
@@ -170,8 +221,7 @@ body {
     align-items: flex-end;
   }
   .header_verification {
-    width: var(--table-verification-width);
-    display: flex;
+    width: var(--table-verification-width);    display: flex;
     justify-content: center;
     align-items: flex-end;
   }
@@ -182,8 +232,7 @@ body {
     align-items: flex-end;
   }
   .header_audit {
-    width: var(--table-audit-width);
-    display: flex;
+    width: var(--table-audit-width);    display: flex;
     justify-content: center;
     align-items: flex-end;
   }
@@ -194,8 +243,7 @@ body {
     align-items: flex-end;
   }
   .header_explanation {
-    width: var(--table-explanation-width);
-    display: flex;
+    width: var(--table-explanation-width);    display: flex;
     justify-content: center;
     align-items: flex-end;
   }
@@ -206,8 +254,7 @@ body {
     align-items: flex-end;
   }
   .header_resolution {
-    width: var(--table-resolution-width);
-    display: flex;
+    width: var(--table-resolution-width);    display: flex;
     justify-content: center;
     align-items: flex-end;
   }
@@ -216,12 +263,40 @@ body {
 .header_3 {
   display: flex;
   flex-direction: column;
-  background-color: cyan;
+
+  .header_fill_space {
+    flex: 0 0 34%;
+  }
+
+  .header_typeofdata {
+    margin-right: 6px;
+    margin-bottom: 3px;
+    background-color: cornflowerblue;
+  }
 
   .header_3_category {
     display: flex;
     flex-direction: row;
+    align-items: flex-end;
+    flex: 1; /* ensures it stretches to fill available space */
+    height: 38.15px;
+    
+    div {
+      background-color: pink;
+      margin-right: 6px;
+      display: flex;
+      height: 100%;
+      align-items: center;   /* makes the <p> align bottom inside each div */
+      justify-content: center; /* centers horizontally */
+    }
   }
+}
+
+.header_typeofdata {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 67%;
 }
 
 .header_regdocuments {
@@ -308,33 +383,58 @@ body {
 
 .header_4 {
   display: flex;
-  background-color: cornflowerblue;
+  flex-direction: column;
+
+  .header_fill_space {
+    flex: 0 0 68%;
+  }
 
   .header_4_natureofdata {
+    margin-right: 6px;
     width: var(--table-natureofdata-width);
+    background-color:aquamarine;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
-    height: 100%;
+    align-items: center;
+    height: 33%;
     text-align: center;
   }
 }
 
-.header_timestamp {
+.header_5 {
   display: flex;
-  width: var(--table-timestamp-width);
-  background-color: cyan;
+  flex-direction: column;
+
+  .header_fill_space {
+    flex: 0 0 68%;
+  }
+
+  .header_addedon {
+    margin-right: 6px;
+    width: var(--table-timestamp-width);
+    background-color:aquamarine;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 33%;
+    text-align: center;
+  }
 }
 
 .paper_entry_container {
   display: flex;
   flex-direction: row;
+  margin-bottom: 3px;
 }
 
 .paper_entry {
   display: flex;
   flex-direction: row;
   text-align: center;
+  
+  div {
+    margin-right: 6px;
+  }
 
   .entry_title {
     width: var(--table-title-width);
@@ -404,46 +504,82 @@ body {
   .entry_data_regdocuments {
     width: var(--table-regdocuments-width);
     flex-shrink: 0;
+    text-align: left;
+    p {
+      margin: 6px;
+    }
   }
 
   .entry_data_puretextreq {
     width: var(--table-puretextreq-width);
     flex-shrink: 0;
+    text-align: left;
+    p {
+      margin: 6px;
+    }
   }
 
   .entry_data_internalpolicies {
     width: var(--table-internalpolicies-width);
     flex-shrink: 0;
+    text-align: left;
+    p {
+      margin: 6px;
+    }
   }
 
   .entry_data_bpmodels {
     width: var(--table-bpmodels-width);
     flex-shrink: 0;
+    text-align: left;
+    p {
+      margin: 6px;
+    }
   }
 
   .entry_data_bpdescription {
     width: var(--table-bpdescription-width);
     flex-shrink: 0;
+    text-align: left;
+    p {
+      margin: 6px;
+    }
   }
 
   .entry_data_eventlogs {
     width: var(--table-eventlogs-width);
     flex-shrink: 0;
+    text-align: left;
+    p {
+      margin: 6px;
+    }
   }
 
   .entry_data_formalizedconstraints {
     width: var(--table-formalizedconstraints-width);
     flex-shrink: 0;
+    text-align: left;
+    p {
+      margin: 6px;
+    }
   }
 
   .entry_data_semiformalizedconstraints {
     width: var(--table-semiformalizedconstraints-width);
     flex-shrink: 0;
+    text-align: left;
+    p {
+      margin: 6px;
+    }
   }
 
   .entry_data_others {
     width: var(--table-others-width);
     flex-shrink: 0;
+    text-align: left;
+    p {
+      margin: 6px;
+    }
   }
 
   .entry_faq_natureofdata {
@@ -471,6 +607,29 @@ body {
   transition: background-color 0.3s ease;
 }
 
+.entry_delete {
+  width: 50px;     
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: crimson;
+  color: white;
+  cursor: pointer;
+  margin-right: 6px;
+  border-radius: 8px;
+  font-size: small;
+}
+
+
+.details_buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+
 .details_header {
   display: flex;
   flex-direction: row;
@@ -486,10 +645,19 @@ body {
   flex-direction: row;
   width: 40%;
   color: black;
-  justify-content: space-around;
+  justify-content: right;
+  gap: 10px;
 }
 .details_blue{
   color: blue;
+}
+.year_and_cits > div {
+  border: 4px solid blue;
+  padding: 4px;
+  p {
+    text-align: center;
+    margin: 2px;
+  }
 }
 
 .details_1 {
@@ -499,7 +667,8 @@ body {
 .details_1_abstract {
   display: flex;
   width: 80%;
-  margin: 20px;
+  margin-right: 20px;
+  text-align: justify;
 }
 
 .details_1_right {
@@ -518,6 +687,15 @@ body {
   flex-direction: row;
   justify-content: center;
   gap: 20px;
+}
+
+.blue_box {
+  background-color: blue;
+  color: white;
+  padding: 10px 0 10px 0;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 .details_2_1 {
@@ -549,12 +727,18 @@ body {
 .details_3_headline {
   display: flex;
   justify-content: center;
+  width: 100%;
+  margin-bottom: 6px;
+  h3 {
+    text-align: center;
+  }
 }
 
 .freies_posing {
   display: flex;
   flex-direction: row;
   gap: 50px;
+  align-items: flex-start;
 }
 
 .latissimus_von_vorn,
@@ -562,6 +746,29 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: 50%;
+  gap: 30px;
+
+  p {
+    margin: 10px;
+  }
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 30px;
+}
+
+.seitlicher_brustmuskel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 50%;
+
+  p {
+    margin: 10px;
+  }
 }
 
 .details_4 {
@@ -619,4 +826,36 @@ body {
 .filter_left_right {
   display: flex;
   justify-content: space-around;
+}
+
+.update_bpc {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+form {
+  hr {
+    margin: 20px 0 20px 0;
+  }
+}
+
+.update_general {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.update_typeofdata {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.update_faq {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 20px;
 }

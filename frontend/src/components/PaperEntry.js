@@ -33,41 +33,39 @@ const PaperEntry = ({ paper, setChosenPaper }) => {
 
     return (
         <div className="paper_entry_container">
-        <div className="paper_entry" onClick={handleClick}>
-            <div className="entry_title"><p>{paper.title}</p></div>
-            <div className="entry_doi"><a href={`https://doi.org/${paper.doi}`} target="_blank" rel="noopener noreferrer">{paper.doi}</a></div>
-            <div className="entry_year"><p>{paper.year}</p></div>
+            <div className="paper_entry" onClick={handleClick}>
+                <div className="entry_title"><p>{paper.title}</p></div>
+                <div className="entry_doi"><p><a href={`https://doi.org/${paper.doi}`} target="_blank" rel="noopener noreferrer">{paper.doi}</a></p></div>
+                <div className="entry_year"><p>{paper.year}</p></div>
 
-            <div className="entry_elicitation_modeling"><p>{paper.BPC_Task_ComplianceElicitation_Modeling}</p></div>
-            <div className="entry_elicitation_extraction"><p>{paper.BPC_Task_ComplianceElicitation_Extraction}</p></div>
-            <div className="entry_checking_verification"><p>{paper.BPC_Task_ComplianceChecking_Verification}</p></div>
-            <div className="entry_checking_enforcementmonitoring"><p>{paper.BPC_Task_ComplianceChecking_EnforcementMonitoring}</p></div>
-            <div className="entry_checking_audit"><p>{paper.BPC_Task_ComplianceChecking_Audit}</p></div>
-            <div className="entry_analysis_reporting"><p>{paper.BPC_Task_ComplianceAnalysis_Reporting}</p></div>
-            <div className="entry_analysis_explanation"><p>{paper.BPC_Task_ComplianceAnalysis_Explanation}</p></div>
-            <div className="entry_enhancement_recovery"><p>{paper.BPC_Task_ComplianceEnhancement_Recovery}</p></div>
-            <div className="entry_enhancement_resolution"><p>{paper.BPC_Task_ComplianceEnhancement_Resolution}</p></div>
-            <div className="entry_other_tasks"><p>{paper.BPC_Task_Others}</p></div>
+                <div className="entry_elicitation_modeling"><p>{paper.BPC_Task_ComplianceElicitation_Modeling}</p></div>
+                <div className="entry_elicitation_extraction"><p>{paper.BPC_Task_ComplianceElicitation_Extraction}</p></div>
+                <div className="entry_checking_verification"><p>{paper.BPC_Task_ComplianceChecking_Verification}</p></div>
+                <div className="entry_checking_enforcementmonitoring"><p>{paper.BPC_Task_ComplianceChecking_EnforcementMonitoring}</p></div>
+                <div className="entry_checking_audit"><p>{paper.BPC_Task_ComplianceChecking_Audit}</p></div>
+                <div className="entry_analysis_reporting"><p>{paper.BPC_Task_ComplianceAnalysis_Reporting}</p></div>
+                <div className="entry_analysis_explanation"><p>{paper.BPC_Task_ComplianceAnalysis_Explanation}</p></div>
+                <div className="entry_enhancement_recovery"><p>{paper.BPC_Task_ComplianceEnhancement_Recovery}</p></div>
+                <div className="entry_enhancement_resolution"><p>{paper.BPC_Task_ComplianceEnhancement_Resolution}</p></div>
+                <div className="entry_other_tasks"><p>{paper.BPC_Task_Others}</p></div>
 
-            <div className="entry_data_regdocuments"><p>{paper.TypeOfData_RegulatoryDocuments}</p></div>
-            <div className="entry_data_puretextreq"><p>{paper.TypeOfData_PureTextRequirements}</p></div>
-            <div className="entry_data_internalpolicies"><p>{paper.TypeOfData_InternalPolicies}</p></div>
-            <div className="entry_data_bpmodels"><p>{paper.TypeOfData_BPModels}</p></div>
-            <div className="entry_data_bpdescription"><p>{paper.TypeOfData_BPDescription}</p></div>
-            <div className="entry_data_eventlogs"><p>{paper.TypeOfData_EventLogs}</p></div>
-            <div className="entry_data_formalizedconstraints"><p>{paper.TypeOfData_FormalizedConstraints}</p></div>
-            <div className="entry_data_semiformalizedconstraints"><p>{paper.TypeOfData_SemiformalizedConstraints}</p></div>
-            <div className="entry_data_others"><p>{paper.TypeOfData_Others}</p></div>
+                <div className="entry_data_regdocuments"><p>{paper.TypeOfData_RegulatoryDocuments}</p></div>
+                <div className="entry_data_puretextreq"><p>{paper.TypeOfData_PureTextRequirements}</p></div>
+                <div className="entry_data_internalpolicies"><p>{paper.TypeOfData_InternalPolicies}</p></div>
+                <div className="entry_data_bpmodels"><p>{paper.TypeOfData_BPModels}</p></div>
+                <div className="entry_data_bpdescription"><p>{paper.TypeOfData_BPDescription}</p></div>
+                <div className="entry_data_eventlogs"><p>{paper.TypeOfData_EventLogs}</p></div>
+                <div className="entry_data_formalizedconstraints"><p>{paper.TypeOfData_FormalizedConstraints}</p></div>
+                <div className="entry_data_semiformalizedconstraints"><p>{paper.TypeOfData_SemiformalizedConstraints}</p></div>
+                <div className="entry_data_others"><p>{paper.TypeOfData_Others}</p></div>
 
-            <div className="entry_faq_natureofdata"><p>{paper.FAQ_NatureOfData}</p></div>
-            <div className="entry_createdat"><p>{paper.createdAt}</p></div>
+                <div className="entry_faq_natureofdata"><p>{paper.FAQ_NatureOfData}</p></div>
+                <div className="entry_createdat"><p>{paper.createdAt}</p></div>
+            </div>
+            <div className="entry_buttons_container">
+                <div className="entry_delete" onClick={handleDelete}>Delete</div>
+            </div>
         </div>
-        <div className="entry_delete">
-        <button onClick={handleDelete} style={{ backgroundColor: 'crimson', color: 'white', padding: '0.3rem 0.6rem', cursor: 'pointer', border: 'none', borderRadius: '4px' }}>
-            Delete
-        </button>
-        </div>
-    </div>
     )
 }
 

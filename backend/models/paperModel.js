@@ -3,16 +3,18 @@ const Schema = mongoose.Schema;
 
 // Enums deklarieren
 const focusEnum = [
-    "Main Focus",
-    "Secondary Focus",
-    "Mentioned in Future Work",
-    "Not Mentioned",
-    "Mentioned but not Elaborated"
+    "main focus",
+    "secondary focus",
+    "mentioned in future work",
+    "not mentioned",
+    "mentioned but not elaborated",
+    "not relevant",
+    ""
 ];
 
-const dataProcessedEnum = ["automatic", "semi-automatic", "manual"];
-const natureOfDataEnum = ["synthetic", "real-world"];
-const complianceLevelEnum = ["Compliance Level", "Compliance Degree", "Both"];
+const dataProcessedEnum = ["automatic", "semi-automatic", "manual", "not relevant", ""];
+const natureOfDataEnum = ["synthetic", "real-world", "not relevant", "both", ""];
+const complianceLevelEnum = ["compliance level", "compliance degree", "both", "not relevant", ""];
 
 // Felder die in der DB gespeichert werden
 const paperSchema = new Schema({

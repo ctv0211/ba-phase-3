@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useState } from 'react'
 
 // components
@@ -16,6 +16,7 @@ function App() {
         <Navbar />
         <div className='pages'>
           <Routes>
+            <Route path="/" element={<Navigate to="/home" replace />} />
             <Route
               path="/home"
               element={<Home setChosenPaper={setChosenPaper}/>}

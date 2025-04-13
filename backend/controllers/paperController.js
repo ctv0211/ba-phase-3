@@ -7,11 +7,13 @@ const mongoose = require('mongoose')
 
 // GET all papers
 const getPapers = async (req, res) => {
-    // find all and sort by descening order
-    const papers = await Paper.find({}).sort({createdAt: -1})
-
-    res.status(200).json(papers)
-}
+    try {
+      const papers = await Paper.find({}).sort({ year: -1, title: 1 });
+      res.status(200).json(papers);
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to fetch papers' });
+    }
+  };
 
 // GET paper by id
 const getPaperById = async (req, res) => {
@@ -79,44 +81,76 @@ const createPaper = async (req, res) => {
         cleanedDOI = doi.replace(/^https:\/\/doi\.org\//i, "");
     }
 
-    try {
-        const paper = await Paper.create({
-            year,
-            title,
-            numberOfCitations,
-            abstract,
-            doi: cleanedDOI,
-            typeOfPaper,
-            dataAccessible,
-            BPC_Task_ComplianceElicitation_Modeling,
-            BPC_Task_ComplianceElicitation_Extraction,
-            BPC_Task_ComplianceChecking_Verification,
-            BPC_Task_ComplianceChecking_EnforcementMonitoring,
-            BPC_Task_ComplianceChecking_Audit,
-            BPC_Task_ComplianceAnalysis_Reporting,
-            BPC_Task_ComplianceAnalysis_Explanation,
-            BPC_Task_ComplianceEnhancement_Recovery,
-            BPC_Task_ComplianceEnhancement_Resolution,
-            BPC_Task_Others,
-            TypeOfData_RegulatoryDocuments,
-            TypeOfData_PureTextRequirements,
-            TypeOfData_InternalPolicies,
-            TypeOfData_BPModels,
-            TypeOfData_BPDescription,
-            TypeOfData_EventLogs,
-            TypeOfData_FormalizedConstraints,
-            TypeOfData_SemiformalizedConstraints,
-            TypeOfData_Others,
-            FAQ_OtherDataInFuture,
-            FAQ_DataProcessed,
-            FAQ_DataConverter,
-            FAQ_LimitationsOfDataset,
-            FAQ_NatureOfData,
-            FAQ_MoreThanOneVersion,
-            FAQ_ComplianceLevelOrDegree,
-            FAQ_Stakeholders
-        });
+    if (!cleanedDOI) {
+        cleanedDOI = "[no DOI found]"
+      }
 
+    // prüfe ob doi bereits vorkommt
+    const existing = await Paper.findOne({ doi: cleanedDOI });
+    console.log("existing", existing)
+    if (existing) {
+        res.status(400).json({ error: `Paper with DOI '${cleanedDOI}' already exists.` });
+        // da die doi bereits vorkommt (kann auch leer sein) prüfe ob Titel bereits vorkommt
+        const existingTitle = await Paper.findOne({ title: title });
+        console.log("existingTitle", existingTitle)
+        if (existingTitle) {
+            return res.status(400).json({ error: `Paper with Title '${title}' already exists.` });
+        }
+    }
+
+    // Hilfsfunktion zur Normalisierung
+  const normalize = (val) => typeof val === 'string' ? val.trim().toLowerCase() : val;
+  const removeQuotesAndNormalize = (val) => {
+    if (typeof val !== 'string') return val;
+  
+    const cleaned = val.replace(/^"(.*)"$/, '$1').trim().toLowerCase();
+  
+    if (cleaned === 'true') return true;
+    if (cleaned === 'false') return false;
+  
+    return cleaned;
+  };
+
+  // Paper-Objekt mit normalisierten Enum-Werten
+  const processedEntry = {
+    year,
+    title,
+    numberOfCitations,
+    abstract,
+    doi: cleanedDOI,
+    typeOfPaper,
+    dataAccessible: removeQuotesAndNormalize(dataAccessible),
+    BPC_Task_ComplianceElicitation_Modeling: normalize(BPC_Task_ComplianceElicitation_Modeling),
+    BPC_Task_ComplianceElicitation_Extraction: normalize(BPC_Task_ComplianceElicitation_Extraction),
+    BPC_Task_ComplianceChecking_Verification: normalize(BPC_Task_ComplianceChecking_Verification),
+    BPC_Task_ComplianceChecking_EnforcementMonitoring: normalize(BPC_Task_ComplianceChecking_EnforcementMonitoring),
+    BPC_Task_ComplianceChecking_Audit: normalize(BPC_Task_ComplianceChecking_Audit),
+    BPC_Task_ComplianceAnalysis_Reporting: normalize(BPC_Task_ComplianceAnalysis_Reporting),
+    BPC_Task_ComplianceAnalysis_Explanation: normalize(BPC_Task_ComplianceAnalysis_Explanation),
+    BPC_Task_ComplianceEnhancement_Recovery: normalize(BPC_Task_ComplianceEnhancement_Recovery),
+    BPC_Task_ComplianceEnhancement_Resolution: normalize(BPC_Task_ComplianceEnhancement_Resolution),
+    BPC_Task_Others,
+    TypeOfData_RegulatoryDocuments,
+    TypeOfData_PureTextRequirements,
+    TypeOfData_InternalPolicies,
+    TypeOfData_BPModels,
+    TypeOfData_BPDescription,
+    TypeOfData_EventLogs,
+    TypeOfData_FormalizedConstraints,
+    TypeOfData_SemiformalizedConstraints,
+    TypeOfData_Others,
+    FAQ_OtherDataInFuture,
+    FAQ_DataProcessed: normalize(FAQ_DataProcessed),
+    FAQ_DataConverter,
+    FAQ_LimitationsOfDataset,
+    FAQ_NatureOfData: normalize(FAQ_NatureOfData),
+    FAQ_MoreThanOneVersion,
+    FAQ_ComplianceLevelOrDegree: normalize(FAQ_ComplianceLevelOrDegree),
+    FAQ_Stakeholders
+  };
+
+    try {
+        const paper = await Paper.create(processedEntry);
         res.status(200).json(paper);
     } catch (error) {
         res.status(400).json({ error: error.message });

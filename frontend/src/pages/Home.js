@@ -42,7 +42,7 @@ const Home = ({setChosenPaper }) => {
 
     const [searchTerm, setSearchTerm] = useState("")
 
-    console.log("searchTerm", searchTerm)
+    const [showFilter, setShowFilter]  = useState(false)
 
     // useEffect hook: rufe diesen Code nur einmalig auf (wenn Home Component erstmalig gerendert wird)
     useEffect(() => {
@@ -104,11 +104,15 @@ Das eingesetzte csv file muss folgende Bedingungen erfüllen:
     3.1) Einträge dürfen kein Semikolon enthalten
     3.2) Leeres Feld im Eintrag ist ""
 4) Die Einträge (und der Header) sind durch Newlines (\n) voneineander getrennt
+5) Es dürfen auch Spalten vorkommen, die nicht zu den unter 2.1 genannten zählen. Diese werden nicht in der Datenbank gespeichert
+6) UTF-8 empfohlen
     */
     const handleFileUpload = async (e) => {
         const file = e.target.files[0];
         // Mal kucken ob das file überhaupt existiert
         if (!file) return;
+
+        let insertedCount = 0
 
         Papa.parse(file, {
             header: true,
@@ -116,8 +120,98 @@ Das eingesetzte csv file muss folgende Bedingungen erfüllen:
             skipEmptyLines: true,
             complete: async function (results) {
                 console.log('Parsed data:', results.data);
+                let uploadCount = results.data.length
+                const malformedPapers = []
 
                 for (const entry of results.data) {
+
+                  // INPUT VALIDATION
+                  const focusEnum = [
+                    "main focus",
+                    "secondary focus",
+                    "mentioned in future work",
+                    "not mentioned",
+                    "mentioned but not elaborated",
+                    "not relevant"
+                  ];
+                  
+                  const dataProcessedEnum = ["automatic", "semi-automatic", "manual", "not relevant"];
+                  const natureOfDataEnum = ["synthetic", "real-world", "not relevant", "both"];
+                  const complianceLevelEnum = ["compliance level", "compliance degree", "both", "not relevant"];
+                  
+                  function isValidEnum(value, validValues) {
+                    return value ? validValues.includes(value.trim().toLowerCase()) : false;
+                  }
+                  
+                  function validateEntry(entry) {
+                    const malformed = {
+                      title: entry.title || "Unknown Title",
+                      doi: entry.doi || "No DOI",
+                      reason: []
+                    };
+                  
+                    const requiredFields = ["title"];
+                    for (const field of requiredFields) {
+                      if (!entry[field] || entry[field].trim() === "") {
+                        malformed.reason.push(`Missing ${field}`);
+                      }
+                    }
+                  
+                    const intFields = ["year", "numberOfCitations"];
+                    for (const field of intFields) {
+                      if (entry[field] && isNaN(parseInt(entry[field]))) {
+                        malformed.reason.push(`Invalid number: ${field}`);
+                      }
+                    }
+                  
+                    const booleanFields = ["dataAccessible"];
+                    for (const field of booleanFields) {
+                      const val = entry[field]?.toLowerCase();
+                      if (val !== "true" && val !== "false") {
+                        malformed.reason.push(`Invalid boolean: ${field}`);
+                      }
+                    }
+                  
+                    const focusFields = [
+                      "BPC_Task_ComplianceElicitation_Modeling",
+                      "BPC_Task_ComplianceElicitation_Extraction",
+                      "BPC_Task_ComplianceChecking_Verification",
+                      "BPC_Task_ComplianceChecking_EnforcementMonitoring",
+                      "BPC_Task_ComplianceChecking_Audit",
+                      "BPC_Task_ComplianceAnalysis_Reporting",
+                      "BPC_Task_ComplianceAnalysis_Explanation",
+                      "BPC_Task_ComplianceEnhancement_Recovery",
+                      "BPC_Task_ComplianceEnhancement_Resolution"
+                    ];
+                    for (const field of focusFields) {
+                      if (entry[field] && !isValidEnum(entry[field], focusEnum)) {
+                        malformed.reason.push(`Invalid enum value for ${field}`);
+                      }
+                    }
+                  
+                    if (entry["FAQ_DataProcessed"] && !isValidEnum(entry["FAQ_DataProcessed"], dataProcessedEnum)) {
+                      malformed.reason.push("Invalid FAQ_DataProcessed");
+                    }
+                    if (entry["FAQ_NatureOfData"] && !isValidEnum(entry["FAQ_NatureOfData"], natureOfDataEnum)) {
+                      malformed.reason.push("Invalid FAQ_NatureOfData");
+                    }
+                    if (entry["FAQ_ComplianceLevelOrDegree"] && !isValidEnum(entry["FAQ_ComplianceLevelOrDegree"], complianceLevelEnum)) {
+                      malformed.reason.push("Invalid FAQ_ComplianceLevelOrDegree");
+                    }
+                  
+                    return malformed.reason.length === 0 ? null : malformed;
+                  }
+                  
+                  const validation = validateEntry(entry)
+                  if (validation) {
+                    malformedPapers.push(validation)
+                    console.log(malformedPapers)
+                    // nächstes Paper (ohne es zu DB zu adden)
+                    continue
+                  }
+                  
+                  // ENDE INPUT VALIDATION                  
+
                   try {
                     const res = await fetch('/api/papers', {
                       method: 'POST',
@@ -127,13 +221,27 @@ Das eingesetzte csv file muss folgende Bedingungen erfüllen:
 
                     if (!res.ok) {
                       console.error('Failed to insert paper:', entry, await res.text());
+                    } else {
+                      insertedCount = insertedCount + 1
                     }
                   } catch (err) {
                     console.error('Fetch error:', err);
                   }
                 }
+                
+                console.log("malformedPapers", malformedPapers)
 
-                alert('All data inserted!');
+                let allErrorString = "";
+                if (malformedPapers.length === 0) {
+                  allErrorString = "All papers inserted!"
+                }
+                else {
+                  for (const paper of malformedPapers) {
+                    allErrorString += `Paper "${paper.title}" (${paper.doi}) not inserted.\nReason: ${paper.reason}\n\n`;
+                  }
+                }
+
+                alert(allErrorString);
                 window.location.reload();
               },
             error: function (error) {
@@ -144,7 +252,16 @@ Das eingesetzte csv file muss folgende Bedingungen erfüllen:
 
     return (
         <>
-            <Filter
+            <div className='home_content_container'>
+              <div className='button_container'>
+                <button className='insert_data' onClick={() => setShowFilter(!showFilter)}>
+                  <p>{showFilter ? "Hide Filter" : "Show Filter"}</p>
+                </button>
+                <button className="insert_data" onClick={handleInsertClick}>Insert Data</button>
+                <button className="delete_data" onClick={handleDeleteAll}>Clear Table</button>
+              </div>
+        
+              {showFilter && <Filter
                 setStartYear={setStartYear}
                 setEndYear={setEndYear}
                 setModeling={setModeling}
@@ -170,11 +287,8 @@ Das eingesetzte csv file muss folgende Bedingungen erfüllen:
                 setNatureOfData={setNatureOfData}
 
                 setSearchTerm={setSearchTerm}
-            />
-            <div className='button_container'>
-              <button className="insert_data" onClick={handleInsertClick}>Insert Data</button>
-              <button className="delete_data" onClick={handleDeleteAll}>Delete All Papers</button>
-            </div>
+            />}
+
             <input
                 ref={fileInputRef}
                 type="file"
@@ -182,7 +296,7 @@ Das eingesetzte csv file muss folgende Bedingungen erfüllen:
                 onChange={handleFileUpload}
                 style={{ display: 'none' }}
             />
-
+            </div>
             <div className='table-scroll-container'>
               <div className="home">
               <Header />
@@ -191,9 +305,9 @@ Das eingesetzte csv file muss folgende Bedingungen erfüllen:
                           const inYearRange = startYear === null && endYear === null || paper.year >= startYear && paper.year <= endYear;
 
                           const acceptedFocusValues = [
-                            "Main Focus",
-                            "Secondary Focus",
-                            "Mentioned in Future Work"
+                            "main focus",
+                            "secondary focus",
+                            "mentioned in future work"
                           ];
 
                           const modelingMatch = modeling
@@ -270,6 +384,10 @@ Das eingesetzte csv file muss folgende Bedingungen erfüllen:
                           const natureOfDataRealworldMatch = natureOfData.toLowerCase() === "real-world"
                               ? paper.FAQ_NatureOfData.toLowerCase() === "real-world"
                               : true
+
+                          const natureOfDataBothMatch = natureOfData.toLowerCase() === "both"
+                              ? paper.FAQ_NatureOfData.toLowerCase() === "both"
+                              : true
                         
                           const matchesAll =
                             inYearRange &&
@@ -292,6 +410,7 @@ Das eingesetzte csv file muss folgende Bedingungen erfüllen:
                             semiformalizedConstraintsMatch &&
                             natureOfDataSyntheticMatch &&
                             natureOfDataRealworldMatch &&
+                            natureOfDataBothMatch &&
 
                             paper.doi.includes(searchTerm)
                       

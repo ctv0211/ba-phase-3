@@ -118,9 +118,10 @@ const Filter = ({
             onChange={(e) => setNatureOfData(e.target.value)}
             className="border rounded px-2 py-1 w-full"
             >
-            <option value="">-</option>
-            <option value="Synthetic">Synthetic</option>
-            <option value="Real-World">Real World</option>
+            <option value="not relevant">-</option>
+            <option value="synthetic">Synthetic</option>
+            <option value="real-World">Real World</option>
+            <option value="both">Both</option>
             </select>
         </div>
 
