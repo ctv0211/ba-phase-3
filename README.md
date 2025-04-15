@@ -60,10 +60,10 @@ Add new papers to catalog:
 
 The csv must adhere to the following standards:
 
-    1) Semicolon as delimiter
+1) Semicolon as delimiter
 
-    2) The first row is the header that contains the column names:
-      2.1) Allowed column names are:
+2) The first row is the header that contains the column names:
+    Allowed column names are:
             title, abstract, numberOfCitations, doi, year, typeOfPaper, dataAccessible, BPC_Task_ComplianceElicitation_Modeling, BPC_Task_ComplianceElicitation_Extraction,
         BPC_Task_ComplianceChecking_Verification, BPC_Task_ComplianceChecking_EnforcementMonitoring,
     BPC_Task_ComplianceChecking_Audit, BPC_Task_ComplianceAnalysis_Reporting,
@@ -74,16 +74,16 @@ The csv must adhere to the following standards:
     TypeOfData_FormalizedConstraints, TypeOfData_SemiformalizedConstraints, TypeOfData_Others,
     FAQ_OtherDataInFuture, FAQ_DataProcessed, FAQ_DataConverter, FAQ_LimitationsOfDataset,
     FAQ_NatureOfData, FAQ_MoreThanOneVersion, FAQ_ComplianceLevelOrDegree, FAQ_Stakeholders
-      2.2) Column names are case-insensitive
-      2.3) Column order does not matter
+    Column names are case-insensitive
+    Column order does not matter
 
-   3) Starting from the second row, the entries follow:
-      3.1) Entries must not contain semicolons
-      3.2) An empty field is represented by ""
+3) Starting from the second row, the entries follow:
+    Entries must not contain semicolons
+    An empty field is represented by ""
 
 4) Entries and header are separated by newlines (\n)
 
 5) Additional columns that are not listed in 2.1 are allowed and will simply not be saved to the database
 
-UTF-8 encoding is recommended
+6) UTF-8 encoding is recommended
 
