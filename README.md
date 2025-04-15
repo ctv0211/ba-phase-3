@@ -31,10 +31,12 @@ For starting the web application, start the backend and frontend server separate
     npm install
 
 - Starting the backend:
+
     cd backend
     npm run dev
 
-- Starting the frontend
+- Starting the frontend:
+
     cd frontend
     npm start
 
