@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Enums deklarieren
+// Enums deklarieren:
 const focusEnum = [
     "main focus",
     "secondary focus",
