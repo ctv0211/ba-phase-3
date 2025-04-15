@@ -1,5 +1,8 @@
 BPC Dataset Catalog
 
+node v.22.4.1 recommended
+npm 10.8.2
+
 --- Architecture ---
 
 - backend: communication between frontend and database, using Express and JavaScript
@@ -45,9 +48,8 @@ For starting the web application, start the backend and frontend server separate
 --- Connecting to Database ---
 add a .env file in backend folder that contains the following:
     - port of the backend
-    - connection credentials string for a mongo db atlas cluster
+    - connection credentials string for a mongo db atlas cluster. See the example below:
 
-    e.g.
     PORT=4000
     MONGO_URI=mongodb+srv://<user>:<password>@papercluster.hzlmcwh.mongodb.net
 
