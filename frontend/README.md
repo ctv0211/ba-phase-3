@@ -1,70 +1,89 @@
-# Getting Started with Create React App
+BPC Dataset Catalog
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+--- Architecture ---
 
-## Available Scripts
+- backend: communication between frontend and database, using Express and JavaScript
 
-In the project directory, you can run:
+    - database: MongoDB Atlas Cluster
+    - controllers: low-level CRUD interaction with database cluster
+    - routes: routes to controller CRUD functions
+    - models: model of the paper, which attributes to store to database
+    - .env: environvent variables for port, on which the backend server listens to
+    - server.js: entry point of backend application
 
-### `npm start`
+- frontend: web application for user interaction and user view, using React and JavaScript
+    - pages: pages to render; there are currently 2 pages in this application:
+        1) /home: entry point with overview of all papers and filter
+        2) /details: view to show all details about one selected paper
+    - components: functional components:
+        1) Filter: only show papers matching the filter
+        2) Header: Header of the table
+        3) PaperEntry: One entry of a paper, matching the header in content
+        4) Navbar: Navbar on top of the website, currently without any functionality
+        5) PaperUpdate: Formular to adapt the content of certain fields of a paper
+    - index.js/App.js: entry point of frontend application
+    - index.css: visual styling of entire web application
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+--- Setup ---
+For starting the web application, start the backend and frontend server separately.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- install all dependencies:
+    npm install
 
-### `npm test`
+- Starting the backend:
+    cd backend
+    npm run dev
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Starting the frontend
+    cd frontend
+    npm start
 
-### `npm run build`
+- Open http://localhost:3000
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+--- Connecting to Database ---
+add a .env file in backend folder that contains the following:
+    - port of the backend
+    - connection credentials string for a mongo db atlas cluster
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    e.g.
+    PORT=4000
+    MONGO_URI=mongodb+srv://<user>:<password>@papercluster.hzlmcwh.mongodb.net
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+--- Using BPC Dataset Catalog ---
+Add new papers to catalog:
+    - click "Insert Data"
+    - select csv file representation of papers to add
+    - confirm the alert:
+        - the alert may show that some papers cannot be inserted due to different errors. The user can adapt the table, create a new csv file from it and insert it again. The insertion logic takes care of duplicates, based on the doi (or title, if no doi is given)
+    - the papers are now added to the table below
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+The csv must adhere to the following standards:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    1) Semicolon as delimiter
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+    2) The first row is the header that contains the column names:
+      2.1) Allowed column names are:
+            title, abstract, numberOfCitations, doi, year, typeOfPaper, dataAccessible, BPC_Task_ComplianceElicitation_Modeling, BPC_Task_ComplianceElicitation_Extraction,
+        BPC_Task_ComplianceChecking_Verification, BPC_Task_ComplianceChecking_EnforcementMonitoring,
+    BPC_Task_ComplianceChecking_Audit, BPC_Task_ComplianceAnalysis_Reporting,
+    BPC_Task_ComplianceAnalysis_Explanation, BPC_Task_ComplianceEnhancement_Recovery,
+    BPC_Task_ComplianceEnhancement_Resolution, BPC_Task_Others,
+    TypeOfData_RegulatoryDocuments, TypeOfData_PureTextRequirements, TypeOfData_InternalPolicies,
+    TypeOfData_BPModels, TypeOfData_BPDescription, TypeOfData_EventLogs,
+    TypeOfData_FormalizedConstraints, TypeOfData_SemiformalizedConstraints, TypeOfData_Others,
+    FAQ_OtherDataInFuture, FAQ_DataProcessed, FAQ_DataConverter, FAQ_LimitationsOfDataset,
+    FAQ_NatureOfData, FAQ_MoreThanOneVersion, FAQ_ComplianceLevelOrDegree, FAQ_Stakeholders
+      2.2) Column names are case-insensitive
+      2.3) Column order does not matter
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+   3) Starting from the second row, the entries follow:
+      3.1) Entries must not contain semicolons
+      3.2) An empty field is represented by ""
 
-## Learn More
+4) Entries and header are separated by newlines (\n)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+5) Additional columns that are not listed in 2.1 are allowed and will simply not be saved to the database
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+UTF-8 encoding is recommended
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

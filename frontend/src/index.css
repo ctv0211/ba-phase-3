@@ -434,6 +434,10 @@ body {
   
   div {
     margin-right: 6px;
+    flex-wrap: wrap;
+    word-wrap: break-word;     /* Legacy support */
+    overflow-wrap: break-word; /* Modern standard */
+    word-break: break-word;    /* Optional fallback */
   }
 
   .entry_title {
