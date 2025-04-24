@@ -41,8 +41,8 @@ const Home = ({setChosenPaper }) => {
     const [natureOfData, setNatureOfData] = useState("")
 
     const [searchTerm, setSearchTerm] = useState("")
-
-    const [showFilter, setShowFilter]  = useState(false)
+    const [showFilter, setShowFilter] = useState(false)
+    const [filteredPapers, setFilteredPapers] = useState(null)
 
     // useEffect hook: rufe diesen Code nur einmalig auf (wenn Home Component erstmalig gerendert wird)
     useEffect(() => {
@@ -60,7 +60,158 @@ const Home = ({setChosenPaper }) => {
         }
 
         fetchPapers()
-    }, [startYear, endYear, modeling, extraction, verification, monitoring, audit, reporting, explanation, recovery, resolution])
+    }, [])
+
+    // sobald ein Filter (entsprechender state) geändert wird, wird dieser useEffect hook aufgerufen
+    useEffect(() => {
+      if (!papers) return;
+    
+      const acceptedFocusValues = [
+        "main focus",
+        "secondary focus",
+        "mentioned in future work"
+      ];
+    
+      const newFiltered = papers.filter((paper) => {
+        const inYearRange =
+          (startYear === null && endYear === null) ||
+          (paper.year >= startYear && paper.year <= endYear);
+    
+        const modelingMatch = modeling
+          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceElicitation_Modeling)
+          : true;
+    
+        const extractionMatch = extraction
+          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceElicitation_Extraction)
+          : true;
+    
+        const verificationMatch = verification
+          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceChecking_Verification)
+          : true;
+    
+        const monitoringMatch = monitoring
+          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceChecking_EnforcementMonitoring)
+          : true;
+    
+        const auditMatch = audit
+          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceChecking_Audit)
+          : true;
+    
+        const reportingMatch = reporting
+          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceAnalysis_Reporting)
+          : true;
+    
+        const explanationMatch = explanation
+          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceAnalysis_Explanation)
+          : true;
+    
+        const recoveryMatch = recovery
+          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceEnhancement_Recovery)
+          : true;
+    
+        const resolutionMatch = resolution
+          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceEnhancement_Resolution)
+          : true;
+    
+        const regulatoryDocumentsMatch = regulatoryDocuments
+          ? paper.TypeOfData_RegulatoryDocuments.toLowerCase().startsWith("yes")
+          : true;
+    
+        const pureTextRequirementsMatch = pureTextRequirements
+          ? paper.TypeOfData_PureTextRequirements.toLowerCase().startsWith("yes")
+          : true;
+    
+        const internalPoliciesMatch = internalPolicies
+          ? paper.TypeOfData_InternalPolicies.toLowerCase().startsWith("yes")
+          : true;
+    
+        const bpModelsMatch = bpModels
+          ? paper.TypeOfData_BPModels.toLowerCase().startsWith("yes")
+          : true;
+    
+        const bpDescripionMatch = bpDescripion
+          ? paper.TypeOfData_BPDescription.toLowerCase().startsWith("yes")
+          : true;
+    
+        const eventLogsMatch = eventLogs
+          ? paper.TypeOfData_EventLogs.toLowerCase().startsWith("yes")
+          : true;
+    
+        const formalizedConstraintsMatch = formalizedConstraints
+          ? paper.TypeOfData_FormalizedConstraints.toLowerCase().startsWith("yes")
+          : true;
+    
+        const semiformalizedConstraintsMatch = semiformalizedConstraints
+          ? paper.TypeOfData_SemiformalizedConstraints.toLowerCase().startsWith("yes")
+          : true;
+    
+        const natureOfDataSyntheticMatch =
+          natureOfData.toLowerCase() === "synthetic"
+            ? paper.FAQ_NatureOfData.toLowerCase() === "synthetic"
+            : true;
+    
+        const natureOfDataRealworldMatch =
+          natureOfData.toLowerCase() === "real-world"
+            ? paper.FAQ_NatureOfData.toLowerCase() === "real-world"
+            : true;
+    
+        const natureOfDataBothMatch =
+          natureOfData.toLowerCase() === "both"
+            ? paper.FAQ_NatureOfData.toLowerCase() === "both"
+            : true;
+    
+        const matchesAll =
+          inYearRange &&
+          modelingMatch &&
+          extractionMatch &&
+          verificationMatch &&
+          monitoringMatch &&
+          auditMatch &&
+          reportingMatch &&
+          explanationMatch &&
+          recoveryMatch &&
+          resolutionMatch &&
+          regulatoryDocumentsMatch &&
+          pureTextRequirementsMatch &&
+          internalPoliciesMatch &&
+          bpModelsMatch &&
+          bpDescripionMatch &&
+          eventLogsMatch &&
+          formalizedConstraintsMatch &&
+          semiformalizedConstraintsMatch &&
+          natureOfDataSyntheticMatch &&
+          natureOfDataRealworldMatch &&
+          natureOfDataBothMatch &&
+          paper.doi.includes(searchTerm);
+    
+        return matchesAll;
+      });
+    
+      setFilteredPapers(newFiltered);
+    }, [
+      papers,
+      startYear,
+      endYear,
+      modeling,
+      extraction,
+      verification,
+      monitoring,
+      audit,
+      reporting,
+      explanation,
+      recovery,
+      resolution,
+      regulatoryDocuments,
+      pureTextRequirements,
+      internalPolicies,
+      bpModels,
+      bpDescripion,
+      eventLogs,
+      formalizedConstraints,
+      semiformalizedConstraints,
+      natureOfData,
+      searchTerm
+    ]);
 
     // Alle Papers löschen
     const handleDeleteAll = async () => {
@@ -94,18 +245,18 @@ const Home = ({setChosenPaper }) => {
     };
     
     /* Paper in Database speichern
-Das eingesetzte csv file muss folgende Bedingungen erfüllen:
-1) Semikolon als Trennzeichen
-2) 1. Zeile ist der Header, der die Spaltennamen enthält:
-    2.1) Mögliche Spaltennamen sind:  title,abstract,numberOfCitations,doi,year,typeOfPaper,dataAccessible,BPC_Task_ComplianceElicitation_Modeling,BPC_Task_ComplianceElicitation_Extraction,BPC_Task_ComplianceChecking_Verification,BPC_Task_ComplianceChecking_EnforcementMonitoring,BPC_Task_ComplianceChecking_Audit,BPC_Task_ComplianceAnalysis_Reporting,BPC_Task_ComplianceAnalysis_Explanation,BPC_Task_ComplianceEnhancement_Recovery,BPC_Task_ComplianceEnhancement_Resolution,BPC_Task_Others,TypeOfData_RegulatoryDocuments,TypeOfData_PureTextRequirements,TypeOfData_InternalPolicies,TypeOfData_BPModels,TypeOfData_BPDescription,TypeOfData_EventLogs,TypeOfData_FormalizedConstraints,TypeOfData_SemiformalizedConstraints,TypeOfData_Others,FAQ_OtherDataInFuture,FAQ_DataProcessed,FAQ_DataConverter,FAQ_LimitationsOfDataset,FAQ_NatureOfData,FAQ_MoreThanOneVersion,FAQ_ComplianceLevelOrDegree,FAQ_Stakeholders
-    2.2) Groß-/Kleinschreibung ist egal
-    2.3) Reihenfolge der Spalten ist egal
-3) Ab der 2. Zeile folgen die Einträge
-    3.1) Einträge dürfen kein Semikolon enthalten
-    3.2) Leeres Feld im Eintrag ist ""
-4) Die Einträge (und der Header) sind durch Newlines (\n) voneineander getrennt
-5) Es dürfen auch Spalten vorkommen, die nicht zu den unter 2.1 genannten zählen. Diese werden nicht in der Datenbank gespeichert
-6) UTF-8 empfohlen
+      Das eingesetzte csv file muss folgende Bedingungen erfüllen:
+      1) Semikolon als Trennzeichen
+      2) 1. Zeile ist der Header, der die Spaltennamen enthält:
+          2.1) Mögliche Spaltennamen sind:  title,abstract,numberOfCitations,doi,year,typeOfPaper,dataAccessible,BPC_Task_ComplianceElicitation_Modeling,BPC_Task_ComplianceElicitation_Extraction,BPC_Task_ComplianceChecking_Verification,BPC_Task_ComplianceChecking_EnforcementMonitoring,BPC_Task_ComplianceChecking_Audit,BPC_Task_ComplianceAnalysis_Reporting,BPC_Task_ComplianceAnalysis_Explanation,BPC_Task_ComplianceEnhancement_Recovery,BPC_Task_ComplianceEnhancement_Resolution,BPC_Task_Others,TypeOfData_RegulatoryDocuments,TypeOfData_PureTextRequirements,TypeOfData_InternalPolicies,TypeOfData_BPModels,TypeOfData_BPDescription,TypeOfData_EventLogs,TypeOfData_FormalizedConstraints,TypeOfData_SemiformalizedConstraints,TypeOfData_Others,FAQ_OtherDataInFuture,FAQ_DataProcessed,FAQ_DataConverter,FAQ_LimitationsOfDataset,FAQ_NatureOfData,FAQ_MoreThanOneVersion,FAQ_ComplianceLevelOrDegree,FAQ_Stakeholders
+          2.2) Groß-/Kleinschreibung ist egal
+          2.3) Reihenfolge der Spalten ist egal
+      3) Ab der 2. Zeile folgen die Einträge
+          3.1) Einträge dürfen kein Semikolon enthalten
+          3.2) Leeres Feld im Eintrag ist ""
+      4) Die Einträge (und der Header) sind durch Newlines (\n) voneineander getrennt
+      5) Es dürfen auch Spalten vorkommen, die nicht zu den unter 2.1 genannten zählen. Diese werden nicht in der Datenbank gespeichert
+      6) UTF-8 empfohlen
     */
     const handleFileUpload = async (e) => {
         const file = e.target.files[0];
@@ -296,134 +447,18 @@ Das eingesetzte csv file muss folgende Bedingungen erfüllen:
                 onChange={handleFileUpload}
                 style={{ display: 'none' }}
             />
+            <div className='results_counter'>
+              {filteredPapers && filteredPapers.length} Results found
             </div>
+            </div>
+            
             <div className='table-scroll-container'>
               <div className="home">
               <Header />
                   <div className='papers'>
-                      {papers && papers.map((paper) => {
-                          const inYearRange = startYear === null && endYear === null || paper.year >= startYear && paper.year <= endYear;
-
-                          const acceptedFocusValues = [
-                            "main focus",
-                            "secondary focus",
-                            "mentioned in future work"
-                          ];
-
-                          const modelingMatch = modeling
-                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceElicitation_Modeling)
-                          : true;
-
-                        const extractionMatch = extraction
-                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceElicitation_Extraction)
-                          : true;
-
-                        const verificationMatch = verification
-                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceChecking_Verification)
-                          : true;
-
-                        const monitoringMatch = monitoring
-                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceChecking_EnforcementMonitoring)
-                          : true;
-
-                        const auditMatch = audit
-                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceChecking_Audit)
-                          : true;
-
-                        const reportingMatch = reporting
-                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceAnalysis_Reporting)
-                          : true;
-
-                        const explanationMatch = explanation
-                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceAnalysis_Explanation)
-                          : true;
-
-                        const recoveryMatch = recovery
-                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceEnhancement_Recovery)
-                          : true;
-
-                        const resolutionMatch = resolution
-                          ? acceptedFocusValues.includes(paper.BPC_Task_ComplianceEnhancement_Resolution)
-                          : true;
-                          const regulatoryDocumentsMatch = regulatoryDocuments
-                              ? paper.TypeOfData_RegulatoryDocuments.toLowerCase().startsWith("yes")
-                              : true
-
-                          const pureTextRequirementsMatch = pureTextRequirements
-                              ? paper.TypeOfData_PureTextRequirements.toLowerCase().startsWith("yes")
-                              : true
-                          
-                          const internalPoliciesMatch = internalPolicies
-                              ? paper.TypeOfData_InternalPolicies.toLowerCase().startsWith("yes")
-                              : true
-                          
-                          const bpModelsMatch = bpModels
-                              ? paper.TypeOfData_BPModels.toLowerCase().startsWith("yes")
-                              : true
-                          
-                          const bpDescripionMatch = bpDescripion
-                              ? paper.TypeOfData_BPDescription.toLowerCase().startsWith("yes")
-                              : true
-
-                          const eventLogsMatch = eventLogs
-                              ? paper.TypeOfData_EventLogs.toLowerCase().startsWith("yes")
-                              : true
-
-                          const formalizedConstraintsMatch = formalizedConstraints
-                              ? paper.TypeOfData_FormalizedConstraints.toLowerCase().startsWith("yes")
-                              : true
-
-                          const semiformalizedConstraintsMatch = semiformalizedConstraints
-                              ? paper.TypeOfData_SemiformalizedConstraints.toLowerCase().startsWith("yes")
-                              : true
-
-                          const natureOfDataSyntheticMatch = natureOfData.toLowerCase() === "synthetic"
-                              ? paper.FAQ_NatureOfData.toLowerCase() === "synthetic"
-                              : true
-
-                          const natureOfDataRealworldMatch = natureOfData.toLowerCase() === "real-world"
-                              ? paper.FAQ_NatureOfData.toLowerCase() === "real-world"
-                              : true
-
-                          const natureOfDataBothMatch = natureOfData.toLowerCase() === "both"
-                              ? paper.FAQ_NatureOfData.toLowerCase() === "both"
-                              : true
-                        
-                          const matchesAll =
-                            inYearRange &&
-                            modelingMatch &&
-                            extractionMatch &&
-                            verificationMatch &&
-                            monitoringMatch &&
-                            auditMatch &&
-                            reportingMatch &&
-                            explanationMatch &&
-                            recoveryMatch &&
-                            resolutionMatch &&
-                            regulatoryDocumentsMatch &&
-                            pureTextRequirementsMatch &&
-                            internalPoliciesMatch &&
-                            bpModelsMatch &&
-                            bpDescripionMatch &&
-                            eventLogsMatch &&
-                            formalizedConstraintsMatch &&
-                            semiformalizedConstraintsMatch &&
-                            natureOfDataSyntheticMatch &&
-                            natureOfDataRealworldMatch &&
-                            natureOfDataBothMatch &&
-
-                            paper.doi.includes(searchTerm)
-                      
-                          return (
-                              matchesAll && (
-                                  <PaperEntry
-                                      key={paper._id}
-                                      paper={paper}
-                                      setChosenPaper={setChosenPaper}
-                                  />
-                              )
-                          );
-                      })}
+                      {filteredPapers && filteredPapers.map((paper) => (
+                        <PaperEntry key={paper._id} paper={paper} setChosenPaper={setChosenPaper} />
+                      ))}
                   </div>
               </div>
             </div>

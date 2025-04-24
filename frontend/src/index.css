@@ -99,6 +99,10 @@ body {
   color: white;
 }
 
+.results_counter {
+  display: flex;
+}
+
 .table-scroll-container {
   overflow-x: auto;
   max-width: 100%;
